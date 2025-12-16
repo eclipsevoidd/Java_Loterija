@@ -34,16 +34,67 @@ public class Loterija {
                  case "Veikt jaunu izlozi":
                      
                      if (izlozeVeikta) {
-                         try {
                              JOptionPane.showMessageDialog(null, 
-                                 "Vēl jāgaida " + PAUZES_SEKUNDES + " sekundes.(Piezīme: Programma gaidīs 60 sekundes, un tikai TAD veiks izlozi.\n", "Gaidīšana", JOptionPane.WARNING_MESSAGE);
-                             Thread.sleep(PAUZES_MILISEKUNDES);
-                         } catch (InterruptedException e) {
-                             Thread.currentThread().interrupt();
-                             JOptionPane.showMessageDialog(null, "Gaidīšanas process pārtraukts.", "Kļūda", JOptionPane.ERROR_MESSAGE);
+                                 "Gaidīšana nestrādā :(", "Gaidīšana", JOptionPane.WARNING_MESSAGE);
+                             break;
+                     }
+                     
+                     Random rand = new Random();
+                     laimigieSkaitli.clear();
+                     bumbinuSteks.clear();
+                     
+                     String laimigoSkaitluString = "";
+                     
+                     for (int i = 0; i < 30; i++) {
+                         bumbinuSteks.push(rand.nextInt(10));
+                     }
+                     
+                     for (int piegajiens = 1; piegajiens <= 3; piegajiens++) {
+                         int vilksanasSkaits = rand.nextInt(10); 
+                         
+                         for (int k = 0; k < vilksanasSkaits; k++) {
+                             if (!bumbinuSteks.isEmpty()) {
+                                 bumbinuSteks.pop();
+                             }
+                         }
+                         
+                         if (!bumbinuSteks.isEmpty()) {
+                             int laimigais = bumbinuSteks.pop();
+                             laimigieSkaitli.push(laimigais);
+                             laimigoSkaitluString += laimigais;
+                         } else {
+                        	 JOptionPane.showMessageDialog(null, "Nav iespējams veikt izlozi! Bumbiņu steks iztukšojās.");
                              break;
                          }
                      }
+                     
+                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                     pedejaIzlozeDatums = dateFormat.format(new Date()); 
+                     izlozeVeikta = true;
+
+                     JOptionPane.showMessageDialog(null, "Skaitļi izlozēti veiksmīgi!\n", "Paziņojums", JOptionPane.INFORMATION_MESSAGE);
+                     break;
+                     
+                 case "Apskatīt laimīgos skaitļus un datumu":
+                     if (!izlozeVeikta) {
+                         JOptionPane.showMessageDialog(null, "Izloze vēl nav veikta.", "Paziņojums", JOptionPane.WARNING_MESSAGE);
+                         break;
+                     }
+                     
+                     String rezultati = "";
+                     
+                     rezultati = rezultati + "Datums un laiks: " + pedejaIzlozeDatums + "\n\n";
+                     rezultati = rezultati + "Laimīgie skaitļi:\n";
+                     
+                     String skaitluVirkne = laimigieSkaitli.toString();
+                     
+                     rezultati = rezultati + skaitluVirkne;
+                     
+                     JOptionPane.showMessageDialog(null, rezultati, "Laimīgie Skaitļi", JOptionPane.INFORMATION_MESSAGE);
+                     break;
+                 case "Apturēt":
+                     JOptionPane.showMessageDialog(null, "Programma apturēta.");
+                     break;
              }
         } while (!izvele.equals("Apturēt"));
     }
